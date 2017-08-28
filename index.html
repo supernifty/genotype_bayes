@@ -6,8 +6,8 @@
 
 <body>
   <table id="sources">
-    <tr><th>Error rate: </th><td><input type="text" id="error" name="error" value="0.0001"></td></tr>
-    <tr><th>B-allele frequency: </th><td><input type="text" id="baf" name="baf" value="0.00001">
+    <tr><th>Error rate: </th><td><input type="text" id="error" name="error" value="0.001"></td></tr>
+    <tr><th>B-allele frequency prior: </th><td><input type="text" id="baf" name="baf" value="0.00001">
     <tr><th>Coverage: </th><td><input type="text" id="coverage" name="coverage" value="10"></td></tr>
     <tr><th><input type="button" onclick="draw(); return false" value="Update Graph"/></th></tr>
   </table>
@@ -34,42 +34,42 @@ function draw() {
     aseen = cov - bseen;
     x.push(bseen);
     // p(aa) = p(d|aa) * p(aa)
-    paa = Math.pow(erf, bseen) * (1-baf) * (1-baf);
+    paa = choose(cov, aseen) * Math.pow(erf, bseen) * Math.pow(1-erf, aseen) * (1-baf) * (1-baf);
 
     // p(ab) = p(d|ab) * p(ab)
     pab = choose(cov, bseen) * Math.pow(0.5, bseen) * Math.pow(0.5, aseen) * (1 - baf*baf - (1-baf)*(1-baf));
 
     // p(bb) = p(d|bb) * p(bb)
-    pbb = Math.pow(erf, aseen) * (baf * baf);
+    pbb = choose(cov, aseen) * Math.pow(erf, aseen) * Math.pow(1-erf, bseen) * (baf * baf);
 
     total = paa + pab + pbb;
     yh.push(pab / total);
     ya.push(paa / total);
     yb.push(pbb / total);
   }
-  console.log(x);
-  console.log(ya);
-  console.log(yb);
   var af = {
     x: x, 
     y: ya,
     type: 'scatter',
+    fill: 'tozeroy',
     name: 'P(AA|data)'
   };
   var baf = {
     x: x,
     y: yb,
     type: 'scatter',
+    fill: 'tozeroy',
     name: 'P(BB|data)'
   };
   var het = {
     x: x,
     y: yh,
     type: 'scatter',
+    fill: 'tozeroy',
     name: 'P(AB|data)'
   };
   var data = [af, baf, het];
-  Plotly.newPlot('chart', data);
+  Plotly.newPlot('chart', data, { xaxis: { title: 'Observed B alleles' }, yaxis: { title: 'Posterior probability' } });
 }
 
   $(document).ready(function() {
