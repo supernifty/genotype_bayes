@@ -5,12 +5,15 @@
 </head>
 
 <body>
-  <table id="sources">
-    <tr><th>Error rate: </th><td><input type="text" id="error" name="error" value="0.001"></td></tr>
-    <tr><th>B-allele frequency prior: </th><td><input type="text" id="baf" name="baf" value="0.00001">
-    <tr><th>Coverage: </th><td><input type="text" id="coverage" name="coverage" value="10"></td></tr>
-    <tr><th><input type="button" onclick="draw(); return false" value="Update Graph"/></th></tr>
-  </table>
+  <h2>What is the posterior probability of each genotype?</h2>
+  <div>
+    <table id="sources">
+      <tr><th>Error rate: </th><td><input type="text" id="error" name="error" value="0.001"></td></tr>
+      <tr><th>B-allele frequency prior: </th><td><input type="text" id="baf" name="baf" value="0.00001">
+      <tr><th>Depth of Coverage: </th><td><input type="text" id="coverage" name="coverage" value="10"></td></tr>
+      <tr><th><input type="button" onclick="draw(); return false" value="Update Graph"/></th></tr>
+    </table>
+  </div>
   
   <div id="chart" style="height: 640px"></div>
 
