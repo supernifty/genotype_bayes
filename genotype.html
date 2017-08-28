@@ -1,0 +1,81 @@
+<html>
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+  <table id="sources">
+    <tr><th>Error rate: </th><td><input type="text" id="error" name="error" value="0.0001"></td></tr>
+    <tr><th>B-allele frequency: </th><td><input type="text" id="baf" name="baf" value="0.00001">
+    <tr><th>Coverage: </th><td><input type="text" id="coverage" name="coverage" value="10"></td></tr>
+    <tr><th><input type="button" onclick="draw(); return false" value="Update Graph"/></th></tr>
+  </table>
+  
+  <div id="chart" style="height: 640px"><!-- Plotly chart will be drawn inside this DIV --></div>
+  <script>
+function choose(n, k) {
+     if ((typeof n !== 'number') || (typeof k !== 'number')) 
+  return false; 
+    var coeff = 1;
+    for (var x = n-k+1; x <= n; x++) coeff *= x;
+    for (x = 1; x <= k; x++) coeff /= x;
+    return coeff;
+}
+
+function draw() {
+  var x = [], ya = [], yb = [], yh = [],
+    cov = parseInt($('#coverage').val()),
+    baf = parseFloat($('#baf').val()),
+    erf = parseFloat($('#error').val());
+
+  for (i = 0; i < 20; i++) {
+    bseen = Math.round(i * cov / 20);
+    aseen = cov - bseen;
+    x.push(bseen);
+    // p(aa) = p(d|aa) * p(aa)
+    paa = Math.pow(erf, bseen) * (1-baf) * (1-baf);
+
+    // p(ab) = p(d|ab) * p(ab)
+    pab = choose(cov, bseen) * Math.pow(0.5, bseen) * Math.pow(0.5, aseen) * (1 - baf*baf - (1-baf)*(1-baf));
+
+    // p(bb) = p(d|bb) * p(bb)
+    pbb = Math.pow(erf, aseen) * (baf * baf);
+
+    total = paa + pab + pbb;
+    yh.push(pab / total);
+    ya.push(paa / total);
+    yb.push(pbb / total);
+  }
+  console.log(x);
+  console.log(ya);
+  console.log(yb);
+  var af = {
+    x: x, 
+    y: ya,
+    type: 'scatter',
+    name: 'P(AA|data)'
+  };
+  var baf = {
+    x: x,
+    y: yb,
+    type: 'scatter',
+    name: 'P(BB|data)'
+  };
+  var het = {
+    x: x,
+    y: yh,
+    type: 'scatter',
+    name: 'P(AB|data)'
+  };
+  var data = [af, baf, het];
+  Plotly.newPlot('chart', data);
+}
+
+  $(document).ready(function() {
+    draw();
+    $('#sources').change(draw);
+  });
+ </script>
+</body>
+</html>
