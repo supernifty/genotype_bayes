@@ -12,7 +12,8 @@
     <tr><th><input type="button" onclick="draw(); return false" value="Update Graph"/></th></tr>
   </table>
   
-  <div id="chart" style="height: 640px"><!-- Plotly chart will be drawn inside this DIV --></div>
+  <div id="chart" style="height: 640px"></div>
+
   <script>
 function choose(n, k) {
      if ((typeof n !== 'number') || (typeof k !== 'number')) 
@@ -29,8 +30,7 @@ function draw() {
     baf = parseFloat($('#baf').val()),
     erf = parseFloat($('#error').val());
 
-  for (i = 0; i < 20; i++) {
-    bseen = Math.round(i * cov / 20);
+  for (var bseen = 0; bseen <= cov; bseen++) {
     aseen = cov - bseen;
     x.push(bseen);
     // p(aa) = p(d|aa) * p(aa)
