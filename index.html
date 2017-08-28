@@ -68,7 +68,7 @@ function draw() {
     fill: 'tozeroy',
     name: 'P(AB|data)'
   };
-  var data = [af, baf, het];
+  var data = [af, het, baf];
   Plotly.newPlot('chart', data, { xaxis: { title: 'Observed B alleles' }, yaxis: { title: 'Posterior probability' } });
 }
 
